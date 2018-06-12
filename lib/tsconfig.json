@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "system",
+    "target": "ES5",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "watch": true,
+    "out": "./../LibExamples/assets/lib.js"
+  },
+  "files": [
+    "./tween/BasicPlugin.ts",
+    "./tween/Ease.ts",
+    "./tween/EaseFunction.ts",
+    "./tween/TimeLine.ts",
+    "./tween/Tween.ts",
+    "./tween/plugins/TweenCenter.ts",
+    "./tween/plugins/TweenPath.ts",
+    "./tween/plugins/TweenPhysicMove.ts"
+  ]
+}
