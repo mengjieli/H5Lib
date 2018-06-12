@@ -16,6 +16,7 @@
     "./tween/Tween.ts",
     "./tween/plugins/TweenCenter.ts",
     "./tween/plugins/TweenPath.ts",
-    "./tween/plugins/TweenPhysicMove.ts"
+    "./tween/plugins/TweenPhysicMove.ts",
+    "./utils/Bezier.ts"
   ]
 }

@@ -95,6 +95,10 @@ module lib {
             this.addTargetEvent();
         }
 
+        get currentTime() {
+            return this._currentTime / 1000;
+        }
+
         _ease;
         _easeData;
 
@@ -109,8 +113,8 @@ module lib {
                     return;
                 }
                 var cache = [];
-                for (var i = 0; i <= 2000; i++) {
-                    cache[i] = func(i / 2000);
+                for (var i = 0; i <= 3000; i++) {
+                    cache[i] = func(i / 3000);
                 }
                 Tween.easeCache[val] = cache;
             }
@@ -279,7 +283,7 @@ module lib {
                 this._currentTime = this.$time;
             }
             var length = this.pugins.length;
-            var s = this._easeData[2000 * (this._currentTime / this.$time) | 0];
+            var s = this._easeData[3000 * (this._currentTime / this.$time) | 0];
             for (var i = 0; i < length; i++) {
                 this.pugins[i].update(s);
             }
@@ -291,6 +295,7 @@ module lib {
                     this._complete.apply(this._completeThis, this._completeParams);
                 }
             }
+            console.log(time,this.target.x);
             return true;
         }
 

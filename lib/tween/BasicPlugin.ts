@@ -39,7 +39,6 @@ module  lib {
             for (var i = 0; i < length; i++) {
                 var key = keys[i];
                 target[key] = (this._attributes[key] - startAttributes[key]) * value + startAttributes[key];
-                console.log(target[key])
             }
         }
     }
