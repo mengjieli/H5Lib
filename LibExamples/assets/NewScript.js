@@ -41,6 +41,7 @@ cc.Class({
     // onLoad () {},
 
     start () {
+
         this.allTime = 0.5;
 
         let node = new cc.Node();
@@ -55,7 +56,7 @@ cc.Class({
         chartNode.setContentSize(500,500);
         chartNode.x = -400;
         chartNode.y = -250;
-        this.node.addChild(chartNode);
+        //this.node.addChild(chartNode);
         let chart = chartNode.addComponent(LineChart);
         chart.showCalibration = false;
         this.tweenChart = chart;
@@ -66,7 +67,7 @@ cc.Class({
         fpsNpde.y = -250;
         fpsNpde.anchorX = 0;
         fpsNpde.anchorY = 0;
-        this.node.addChild(fpsNpde);
+        //this.node.addChild(fpsNpde);
         this.chart = fpsNpde.addComponent(LineChart);
         this.chart.setYAxis(0,0.06);
         this.chart.showCalibration = false;
@@ -77,6 +78,7 @@ cc.Class({
             console.log(this.tween.currentTime,this.tween.target.x);
             this.tweenChart.addPoint(this.tween.currentTime,this.tween.target.x);
         },this);
+
 
         //let mnode = new cc.Node();
         //mnode.setContentSize(500,500);
@@ -96,10 +98,31 @@ cc.Class({
 
         //let bnode = new cc.Node();
         //this.node.addChild(bnode);
-        //let bgp = bnode.addComponent(cc.Graphics);
-        //bgp.lineWidth = 1;
-        //bgp.strokeColor = new cc.Color(255,255,255,255);
-        //lib.Bezier.drawCubicBezier(bgp,[{x:0,y:0},{x:100,y:50},{x:300,y:300}],10,1);
+
+        let tnode = new cc.Node();
+        tnode.anchorX = 0;
+        tnode.anchorY = 0;
+        tnode.x = -200;
+        tnode.y = -200;
+        this.node.addChild(tnode);
+        tnode.setContentSize(500,500);
+        let pts = [{x:0,y:0},{x:300,y:300}];
+        tnode.on(cc.Node.EventType.TOUCH_START,function(event){
+            let p = event.getLocation();
+            p.x -= cc.director.getWinSize().width/2 + tnode.x;
+            p.y -= cc.director.getWinSize().height/2 + tnode.y;
+            pts.push(p);
+            pts.sort(function (a,b) {
+                return a.x - b.x;
+            });
+            bgp.clear();
+            lib.Bezier.drawCubicBezier(bgp,pts,10,1);
+            console.log(pts);
+        })
+        let bgp = tnode.addComponent(cc.Graphics);
+        bgp.lineWidth = 1;
+        bgp.strokeColor = new cc.Color(255,255,255,255);
+        lib.Bezier.drawCubicBezier(bgp,pts,10,1);
     },
 
     update (dt) {
