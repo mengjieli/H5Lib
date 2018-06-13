@@ -48,10 +48,10 @@ cc.Class({
         this.node.addChild(n);
         n.addComponent(EaseEditor);
 
-        return;
-        this.allTime = 0.5;
+        this.allTime = 3;
 
         let node = new cc.Node();
+        node.y = -200;
         this.node.addChild(node);
         let gp = node.addComponent(cc.Graphics);
         gp.fillColor = new cc.Color(255,100,100,255);
@@ -63,7 +63,7 @@ cc.Class({
         chartNode.setContentSize(500,500);
         chartNode.x = -400;
         chartNode.y = -250;
-        //this.node.addChild(chartNode);
+        this.node.addChild(chartNode);
         let chart = chartNode.addComponent(LineChart);
         chart.showCalibration = false;
         this.tweenChart = chart;
@@ -80,8 +80,8 @@ cc.Class({
         this.chart.showCalibration = false;
 
         let endX = 300;
-        this.tweenChart.setAxis(0,this.allTime,node.x,endX);
-        this.tween = lib.Tween.to(node,this.allTime,{x:endX},lib.Ease.CUBIC_EASE_IN_OUT).update(function(){
+        this.tweenChart.setAxis(0,this.allTime,node.x,endX);//new lib.BezierEase([{x:0.29,y:0.63},{x:0.64,y:0.92}])
+        this.tween = lib.Tween.to(node,this.allTime,{x:endX}).ease(new lib.BezierEase([{x:0.236,y:0.22},{x:0.46,y:1},{x:0.62,y:0.62},{x:0.76,y:1},{x:0.9,y:0.76}])).update(function(){
             console.log(this.tween.currentTime,this.tween.target.x);
             this.tweenChart.addPoint(this.tween.currentTime,this.tween.target.x);
         },this);
@@ -103,8 +103,8 @@ cc.Class({
         //}
 
 
-        //let bnode = new cc.Node();
-        //this.node.addChild(bnode);
+        let bnode = new cc.Node();
+        this.node.addChild(bnode);
 
         let tnode = new cc.Node();
         tnode.anchorX = 0;
@@ -114,26 +114,26 @@ cc.Class({
         this.node.addChild(tnode);
         tnode.setContentSize(500,500);
         let pts = [{x:0,y:0},{x:300,y:300}];
-        tnode.on(cc.Node.EventType.TOUCH_START,function(event){
-            let p = event.getLocation();
-            p.x -= cc.director.getWinSize().width/2 + tnode.x;
-            p.y -= cc.director.getWinSize().height/2 + tnode.y;
-            pts.push(p);
-            pts.sort(function (a,b) {
-                return a.x - b.x;
-            });
-            bgp.clear();
-            lib.Bezier.drawCubicBezier(bgp,pts,10,1);
-            console.log(pts);
-        })
-        let bgp = tnode.addComponent(cc.Graphics);
-        bgp.lineWidth = 1;
-        bgp.strokeColor = new cc.Color(255,255,255,255);
-        lib.Bezier.drawCubicBezier(bgp,pts,10,1);
+
+        //let bgp = tnode.addComponent(cc.Graphics);
+        //tnode.on(cc.Node.EventType.TOUCH_START,function(event){
+        //    let p = event.getLocation();
+        //    p.x -= cc.director.getWinSize().width/2 + tnode.x;
+        //    p.y -= cc.director.getWinSize().height/2 + tnode.y;
+        //    pts.push(p);
+        //    pts.sort(function (a,b) {
+        //        return a.x - b.x;
+        //    }
+        //    bgp.clear();
+        //    lib.Bezier.drawCubicBezier(bgp,pts,10,1);
+        //    console.log(pts);
+        //})
+        //bgp.lineWidth = 1;
+        //bgp.strokeColor = new cc.Color(255,255,255,255);
+        //lib.Bezier.drawCubicBezier(bgp,pts,10,1);
     },
 
     update (dt) {
-        return;
         this.time += dt;
         if(this.tween.isPlaying == false) return;
         //this.tweenChart.addPoint(this.time,this.tween.target.x);

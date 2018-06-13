@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var lib;
 (function (lib) {
     var BasicPlugin = (function () {
@@ -34,7 +39,7 @@ var lib;
             }
         };
         return BasicPlugin;
-    })();
+    }());
     lib.BasicPlugin = BasicPlugin;
 })(lib || (lib = {}));
 var lib;
@@ -87,7 +92,7 @@ var lib;
         Ease.BOUNCE_EASE_IN_OUT = "BounceEaseInOut";
         Ease.BOUNCE_EASE_OUT_IN = "BounceEaseOutIn";
         return Ease;
-    })();
+    }());
     lib.Ease = Ease;
 })(lib || (lib = {}));
 var lib;
@@ -306,14 +311,9 @@ var lib;
         EaseFunction.BounceEaseIn = EaseFunction.bounceEaseIn;
         EaseFunction.BounceEaseOut = EaseFunction.bounceEaseOut;
         return EaseFunction;
-    })();
+    }());
     lib.EaseFunction = EaseFunction;
 })(lib || (lib = {}));
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var lib;
 (function (lib) {
     var TimeLine = (function (_super) {
@@ -505,7 +505,7 @@ var lib;
             this.calls.push({ "time": time, "callBack": callBack, "thisObj": thisObj, "args": args });
         };
         return TimeLine;
-    })(cc.Component);
+    }(cc.Component));
     lib.TimeLine = TimeLine;
 })(lib || (lib = {}));
 var lib;
@@ -531,7 +531,7 @@ var lib;
             this._target = target;
             this._propertiesTo = propertiesTo;
             this._propertiesFrom = propertiesFrom;
-            this.ease = "None";
+            this.ease("None");
             var timeLine;
             if (target instanceof cc.Node) {
                 timeLine = target.addComponent(lib.TimeLine);
@@ -621,32 +621,28 @@ var lib;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(Tween.prototype, "ease", {
-            get: function () {
-                return this._ease;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Tween.prototype.Ease = function (val) {
-            if (!Tween.easeCache[val]) {
-                var func = lib.EaseFunction[val];
-                if (func == null) {
-                    return;
+        Tween.prototype.ease = function (val) {
+            if (typeof val == "string") {
+                if (!Tween.easeCache[val]) {
+                    var func = lib.EaseFunction[val];
+                    if (func == null) {
+                        return;
+                    }
+                    var cache = [];
+                    for (var i = 0; i <= 3000; i++) {
+                        cache[i] = func(i / 3000);
+                    }
+                    Tween.easeCache[val] = cache;
                 }
-                var cache = [];
-                for (var i = 0; i <= 3000; i++) {
-                    cache[i] = func(i / 3000);
-                }
-                Tween.easeCache[val] = cache;
+                this._ease = val;
+                this._easeData = Tween.easeCache[val];
             }
-            this._ease = val;
-            this._easeData = Tween.easeCache[val];
-        };
-        Tween.prototype.EaseExt = function (val) {
-            this._ease = "";
-            this._easeData = null;
-            this._easeExt = val;
+            else {
+                this._ease = "";
+                this._easeData = null;
+                this._easeExt = val;
+            }
+            return this;
         };
         Object.defineProperty(Tween.prototype, "startEvent", {
             get: function () {
@@ -824,7 +820,6 @@ var lib;
                     this._complete.apply(this._completeThis, this._completeParams);
                 }
             }
-            console.log(time, this.target.x);
             return true;
         };
         Tween.prototype.dispose = function () {
@@ -832,10 +827,9 @@ var lib;
                 this.timeLine.removeTween(this);
             }
         };
-        Tween.to = function (target, time, propertiesTo, ease, propertiesFrom) {
-            if (ease === void 0) { ease = "None"; }
+        Tween.to = function (target, time, propertiesTo, propertiesFrom) {
             if (propertiesFrom === void 0) { propertiesFrom = null; }
-            var tween = new Tween(target, time, propertiesTo, ease, propertiesFrom);
+            var tween = new Tween(target, time, propertiesTo, propertiesFrom);
             tween.timeLine.play();
             return tween;
         };
@@ -850,7 +844,7 @@ var lib;
         };
         Tween.easeCache = {};
         return Tween;
-    })();
+    }());
     lib.Tween = Tween;
 })(lib || (lib = {}));
 window.lib = lib;
@@ -948,7 +942,7 @@ var lib;
             }, ease, rotationFrom == null ? null : { "rotation": rotationFrom });
         };
         return TweenCenter;
-    })();
+    }());
     lib.TweenCenter = TweenCenter;
 })(lib || (lib = {}));
 var lib;
@@ -1023,7 +1017,7 @@ var lib;
             return lib.Tween.to(target, time, { "path": path }, ease);
         };
         return TweenPath;
-    })();
+    }());
     lib.TweenPath = TweenPath;
 })(lib || (lib = {}));
 var lib;
@@ -1120,28 +1114,29 @@ var lib;
             return lib.Tween.to(target, time, { "x": xTo, "y": yTo, "vx": vX, "vy": vY, "physicMove": true });
         };
         return TweenPhysicMove;
-    })();
+    }());
     lib.TweenPhysicMove = TweenPhysicMove;
 })(lib || (lib = {}));
 var lib;
 (function (lib) {
     var BezierEase = (function () {
         function BezierEase(points) {
+            points.splice(0, 0, { x: 0, y: 0 });
+            points.push({ x: 1, y: 1 });
             this.lines = lib.Bezier.getCubicBezierLines(points, 10, 1);
         }
         BezierEase.prototype.getEase = function (t) {
             var lines = this.lines;
             for (var i = 0, len = lines.length; i < len; i++) {
-                if (t < lines[i].len) {
+                if (t >= lines[i].x1 && t <= lines[i].x2) {
                     t = lines[i].y1 + (lines[i].y2 - lines[i].y1) * (t - lines[i].x1) / (lines[i].x2 - lines[i].x1);
                     break;
                 }
-                t -= lines[i].len;
             }
             return t;
         };
         return BezierEase;
-    })();
+    }());
     lib.BezierEase = BezierEase;
 })(lib || (lib = {}));
 var lib;
@@ -1195,14 +1190,38 @@ var lib;
             return lines;
         };
         Bezier.getCubicBezierControlPoints = function (points, k) {
-            points = [{
-                    x: points[0].x + points[0].x - points[1].x,
-                    y: points[0].y + points[0].y - points[1].y
-                }].concat(points);
-            points.push({
-                x: points[points.length - 1].x + points[points.length - 1].x - points[points.length - 2].x,
-                y: points[points.length - 1].y + points[points.length - 1].y - points[points.length - 2].y
-            });
+            points = points.concat();
+            if (points.length > 2) {
+                var r1 = Math.atan2(points[1].y - points[0].y, points[1].x - points[0].x);
+                var r2 = Math.atan2(points[2].y - points[1].y, points[2].x - points[1].x);
+                var r = r1 + (r1 - r2) * 0.67;
+                r -= Math.PI;
+                var l = Math.sqrt((points[2].y - points[1].y) * (points[2].y - points[1].y) + (points[2].x - points[1].x) * (points[2].x - points[1].x));
+                points = [{
+                        x: points[0].x + Math.cos(r) * l * 1,
+                        y: points[0].y + Math.sin(r) * l * 1,
+                    }].concat(points);
+                var len = points.length;
+                r1 = Math.atan2(points[len - 2].y - points[len - 1].y, points[len - 2].x - points[len - 1].x);
+                r2 = Math.atan2(points[len - 3].y - points[len - 2].y, points[len - 3].x - points[len - 2].x);
+                var r = r1 + (r1 - r2) * 0.67;
+                r -= Math.PI;
+                l = Math.sqrt((points[len - 3].y - points[len - 2].y) * (points[len - 3].y - points[len - 2].y) + (points[len - 3].x - points[len - 2].x) * (points[len - 3].x - points[len - 2].x));
+                points.push({
+                    x: points[len - 1].x + Math.cos(r) * l * 1,
+                    y: points[len - 1].y + Math.sin(r) * l * 1,
+                });
+            }
+            else {
+                points = [{
+                        x: points[0].x + (points[0].x - points[1].x),
+                        y: points[0].y + points[0].y - points[1].y
+                    }].concat(points);
+                points.push({
+                    x: points[points.length - 1].x + points[points.length - 1].x - points[points.length - 2].x,
+                    y: points[points.length - 1].y + points[points.length - 1].y - points[points.length - 2].y
+                });
+            }
             var controls = [];
             for (var i = 1; i < points.length - 1; i++) {
                 var point1 = points[i - 1];
@@ -1234,6 +1253,6 @@ var lib;
             return controls;
         };
         return Bezier;
-    })();
+    }());
     lib.Bezier = Bezier;
 })(lib || (lib = {}));

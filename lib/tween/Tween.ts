@@ -15,7 +15,7 @@ module lib {
             this._target = target;
             this._propertiesTo = propertiesTo;
             this._propertiesFrom = propertiesFrom;
-            this.ease = "None";
+            this.ease("None");
             var timeLine;
             if(target instanceof cc.Node) {
                 timeLine = target.addComponent(TimeLine);
@@ -103,30 +103,31 @@ module lib {
         _easeData;
         _easeExt;
 
-        get ease() {
-            return this._ease;
-        }
+        //get ease() {
+        //    return this._ease;
+        //}
 
-        Ease(val:string) {
-            if (!Tween.easeCache[val]) {
-                var func = EaseFunction[val];
-                if (func == null) {
-                    return;
+        ease(val:string | IEaseExt) {
+            if(typeof val == "string") {
+                if (!Tween.easeCache[val]) {
+                    var func = EaseFunction[val];
+                    if (func == null) {
+                        return;
+                    }
+                    var cache = [];
+                    for (var i = 0; i <= 3000; i++) {
+                        cache[i] = func(i / 3000);
+                    }
+                    Tween.easeCache[val] = cache;
                 }
-                var cache = [];
-                for (var i = 0; i <= 3000; i++) {
-                    cache[i] = func(i / 3000);
-                }
-                Tween.easeCache[val] = cache;
+                this._ease = val;
+                this._easeData = Tween.easeCache[val];
+            } else {
+                this._ease = "";
+                this._easeData = null;
+                this._easeExt = val;
             }
-            this._ease = val;
-            this._easeData = Tween.easeCache[val];
-        }
-
-        EaseExt(val:Array<any>) {
-            this._ease = "";
-            this._easeData = null;
-            this._easeExt = val;
+            return this;
         }
 
         _startEvent = "";
@@ -307,7 +308,6 @@ module lib {
                     this._complete.apply(this._completeThis, this._completeParams);
                 }
             }
-            console.log(time,this.target.x);
             return true;
         }
 
@@ -317,8 +317,8 @@ module lib {
             }
         }
 
-        static to(target, time, propertiesTo, ease = "None", propertiesFrom = null) {
-            var tween = new Tween(target, time, propertiesTo, ease, propertiesFrom);
+        static to(target, time, propertiesTo,propertiesFrom = null) {
+            var tween = new Tween(target, time, propertiesTo,propertiesFrom);
             tween.timeLine.play();
             return tween;
         }

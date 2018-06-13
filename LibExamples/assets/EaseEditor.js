@@ -34,6 +34,7 @@ cc.Class({
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
+
         this.node.anchorX = this.node.anchorY = 0.5;
 
         this.pointTouchRadius = 15 * 15;
@@ -103,7 +104,7 @@ cc.Class({
 
     drawBezierLine() {
         this.bezierLine.clear();
-        if(this.points.length > 1) lib.Bezier.drawCubicBezier(this.bezierLine,this.points,10,1);
+        if(this.points.length > 1) lib.Bezier.drawCubicBezier(this.bezierLine,this.points,100,1);
         console.log(this.points);
     },
 

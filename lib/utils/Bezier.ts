@@ -57,14 +57,38 @@ module lib {
          * @param k 平滑系数，范围 0 ~ 1.0，越大就越平滑，越小就越尖锐
          */
         public static getCubicBezierControlPoints(points:Array<any>, k:number):Array<any> {
-            points = [{
-                x: points[0].x + points[0].x - points[1].x,
-                y: points[0].y + points[0].y - points[1].y
-            }].concat(points);
-            points.push({
-                x: points[points.length - 1].x + points[points.length - 1].x - points[points.length - 2].x,
-                y: points[points.length - 1].y + points[points.length - 1].y - points[points.length - 2].y
-            });
+            points = points.concat();
+            if(points.length > 2) {
+                let r1 = Math.atan2(points[1].y - points[0].y,points[1].x - points[0].x);
+                let r2 = Math.atan2(points[2].y - points[1].y,points[2].x - points[1].x);
+                let r = r1 + (r1 - r2) * 0.67;
+                r -= Math.PI;
+                let l = Math.sqrt((points[2].y - points[1].y) * (points[2].y - points[1].y) + (points[2].x - points[1].x) * (points[2].x - points[1].x));
+                points = [{
+                    x: points[0].x + Math.cos(r) * l * 1,
+                    y: points[0].y + Math.sin(r) * l * 1,
+                }].concat(points);
+
+                let len = points.length;
+                r1 = Math.atan2(points[len - 2].y - points[len - 1].y,points[len - 2].x - points[len - 1].x);
+                r2 = Math.atan2(points[len - 3].y - points[len - 2].y,points[len - 3].x - points[len - 2].x);
+                let r = r1 + (r1 - r2)*0.67;
+                r -= Math.PI;
+                l = Math.sqrt((points[len - 3].y - points[len - 2].y) * (points[len - 3].y - points[len - 2].y) + (points[len - 3].x - points[len - 2].x) * (points[len - 3].x - points[len - 2].x));
+                points.push({
+                    x: points[len - 1].x + Math.cos(r) * l * 1,
+                    y: points[len - 1].y + Math.sin(r) * l * 1,
+                });
+            } else {
+                points = [{
+                    x: points[0].x + (points[0].x - points[1].x),
+                    y: points[0].y + points[0].y - points[1].y
+                }].concat(points);
+                points.push({
+                    x: points[points.length - 1].x + points[points.length - 1].x - points[points.length - 2].x,
+                    y: points[points.length - 1].y + points[points.length - 1].y - points[points.length - 2].y
+                });
+            }
             var controls:Array<any> = [];
             for (var i = 1; i < points.length - 1; i++) {
                 var point1 = points[i - 1];
