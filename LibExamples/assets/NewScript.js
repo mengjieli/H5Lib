@@ -8,7 +8,8 @@
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
 
-var LineChart = require("LineChart")
+var LineChart = require("LineChart");
+var EaseEditor = require("EaseEditor");
 
 cc.Class({
     extends: cc.Component,
@@ -41,7 +42,13 @@ cc.Class({
     // onLoad () {},
 
     start () {
+        let n = new cc.Node();
+        n.x = 200;
+        n.y = 100;
+        this.node.addChild(n);
+        n.addComponent(EaseEditor);
 
+        return;
         this.allTime = 0.5;
 
         let node = new cc.Node();
@@ -126,6 +133,7 @@ cc.Class({
     },
 
     update (dt) {
+        return;
         this.time += dt;
         if(this.tween.isPlaying == false) return;
         //this.tweenChart.addPoint(this.time,this.tween.target.x);

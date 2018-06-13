@@ -44,6 +44,10 @@ cc.Class({
         radius:2
     },
 
+    onLoad() {
+        this.node.anchorX = this.node.anchorY = 0;
+    },
+
     setAxis(xBegin = 0,xEnd = 1,yBegin = 0,yEnd = 1) {
         this.xBegin = xBegin;
         this.xEnd = xEnd;
@@ -70,6 +74,9 @@ cc.Class({
     addPoint(x,y) {
         this.points.push([x,y]);
         this.hasChange = true;
+        this.points.sort(function (a,b) {
+            return a[0] - b[0];
+        });
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -101,13 +108,13 @@ cc.Class({
 
             for(let i = 0; i < nx; i++) {
                 this.moveTo(i * 50, 0);
-                this.lineTo(i * 50, 20);
+                this.lineTo(i * 50, 10);
                 this.stroke();
             }
 
             for(let i = 1; i < ny; i++) {
                 this.moveTo(0, i * 50);
-                this.lineTo(20,i * 50);
+                this.lineTo(10,i * 50);
                 this.stroke();
             }
 

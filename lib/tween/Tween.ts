@@ -1,7 +1,7 @@
 module lib {
     export class Tween {
 
-        constructor(target, time, propertiesTo, ease = "None", propertiesFrom = null) {
+        constructor(target, time, propertiesTo, propertiesFrom = null) {
             if (Tween.plugins == null) {
                 Tween.registerPlugin("center", TweenCenter);
                 Tween.registerPlugin("path", TweenPath);
@@ -15,7 +15,7 @@ module lib {
             this._target = target;
             this._propertiesTo = propertiesTo;
             this._propertiesFrom = propertiesFrom;
-            this.ease = ease || "None";
+            this.ease = "None";
             var timeLine;
             if(target instanceof cc.Node) {
                 timeLine = target.addComponent(TimeLine);
@@ -101,12 +101,13 @@ module lib {
 
         _ease;
         _easeData;
+        _easeExt;
 
         get ease() {
             return this._ease;
         }
 
-        set ease(val) {
+        Ease(val:string) {
             if (!Tween.easeCache[val]) {
                 var func = EaseFunction[val];
                 if (func == null) {
@@ -120,6 +121,12 @@ module lib {
             }
             this._ease = val;
             this._easeData = Tween.easeCache[val];
+        }
+
+        EaseExt(val:Array<any>) {
+            this._ease = "";
+            this._easeData = null;
+            this._easeExt = val;
         }
 
         _startEvent = "";
@@ -283,7 +290,12 @@ module lib {
                 this._currentTime = this.$time;
             }
             var length = this.pugins.length;
-            var s = this._easeData[3000 * (this._currentTime / this.$time) | 0];
+            var s = 0;
+            if(this._easeData) {
+                s = this._easeData[3000 * (this._currentTime / this.$time) | 0];
+            } else {
+                s = this._easeExt.getEase(this._currentTime / this.$time);
+            }
             for (var i = 0; i < length; i++) {
                 this.pugins[i].update(s);
             }

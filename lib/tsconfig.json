@@ -12,11 +12,13 @@
     "./tween/BasicPlugin.ts",
     "./tween/Ease.ts",
     "./tween/EaseFunction.ts",
+    "./tween/IEaseExt.ts",
     "./tween/TimeLine.ts",
     "./tween/Tween.ts",
     "./tween/plugins/TweenCenter.ts",
     "./tween/plugins/TweenPath.ts",
     "./tween/plugins/TweenPhysicMove.ts",
+    "./tween/ease/BezierEase.ts",
     "./utils/Bezier.ts"
   ]
 }
